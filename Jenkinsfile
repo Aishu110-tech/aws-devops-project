@@ -63,10 +63,15 @@ pipeline {
 
         stage('Verify') {
             steps {
-                bat '''
-                kubectl get pods -n devops-app
-                kubectl get ingress -n devops-app
-                '''
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-jenkins-creds']
+                ]) {
+                    bat '''
+                    kubectl get pods -n devops-app
+                    kubectl get ingress -n devops-app
+                    '''
+                }
             }
         }
     }
